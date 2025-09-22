@@ -1,6 +1,6 @@
 # Chatbot Platform
 
-This is a minimal Chatbot Platform with user authentication, project/agent creation, prompt storage, and integration with the OpenRouter Completion API (using mistralai/mistral)
+This is a minimal Chatbot Platform with user authentication, project/agent creation, prompt storage, and integration with the OpenRouter Completion API (using mistralai/mistral-7b-instruct)
 
 ## Features
 
