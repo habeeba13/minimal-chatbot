@@ -1,6 +1,6 @@
 # Chatbot Platform
 
-This is a minimal Chatbot Platform with user authentication, project/agent creation, prompt storage, and integration with the OpenAI Completion API. It also includes an optional file upload feature using the OpenAI Files API.
+This is a minimal Chatbot Platform with user authentication, project/agent creation, prompt storage, and integration with the OpenAI Completion API. 
 
 ## Features
 
@@ -8,7 +8,6 @@ This is a minimal Chatbot Platform with user authentication, project/agent creat
 *   Create projects/agents under a user
 *   Store and associate prompts with projects/agents
 *   Chat interface powered by OpenRouter (mistralai/mistral-7b-instruct)
-*   (Optional) File upload to OpenAI Files API (Note: This still uses OpenAI's service and may incur costs if you exceed free tier limits).
 
 ## Setup and Installation
 
