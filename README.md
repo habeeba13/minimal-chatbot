@@ -52,7 +52,7 @@ This is a minimal Chatbot Platform with user authentication, project/agent creat
 
 ## Usage
 
-1.  Open your web browser and navigate to `https://minimal-chatbot.onrender.com/`.
+1.  Open your web browser and navigate to [`https://minimal-chatbot.onrender.com/`.](https://minimal-chatbot.onrender.com/).
 2.  **Register:** Create a new user account using the registration form.
 3.  **Login:** Log in with your registered email and password. This will give you a JWT token stored in local storage.
 4.  **Create Project:** After logging in, you can create a new project/agent.
