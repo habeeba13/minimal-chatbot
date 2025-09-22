@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"> <!-- New: Google Font -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* New: Applied Poppins font */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1a1a1a; /* Dark background */
+            color: #f0f0f0; /* Light text */
+        }
+        .container {
+            background-color: #2a2a2a; /* Slightly lighter dark for container */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(106, 13, 173, 0.5); /* Purple shadow */
+            width: 90%;
+            max-width: 600px;
+        }
+        h1,
+        h2,
+        h3,
+        h4 {
+            text-align: center;
+            color: #a020f0; /* Purple headings */
+        }
+        .page-section {
+            margin-top: 20px;
+            border-top: 1px solid #4a4a4a; /* Darker border */
+            padding-top: 20px;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .nav-buttons button {
+            margin: 0 5px;
+            background-color: #6a0dad; /* Purple */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .nav-buttons button:hover {
+            background-color: #8a2be2; /* Lighter Purple on hover */
+        }
+        input[type="email"], input[type="password"], input[type="text"], textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #6a0dad; /* Purple border */
+            border-radius: 4px;
+            background-color: #3a3a3a; /* Dark input background */
+            color: #f0f0f0; /* Light input text */
+        }
+        button {
+            background-color: #6a0dad; /* Purple */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #8a2be2; /* Lighter Purple on hover */
+        }
+        .chat-window {
+            border: 1px solid #6a0dad; /* Purple border */
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #3a3a3a; /* Dark chat window background */
+            color: #f0f0f0; /* Light chat text */
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message.user {
+            text-align: right;
+            color: #b088f5; /* Lighter purple for user messages */
+        }
+        .message.agent {
+            text-align: left;
+            color: #7fffd4; /* A contrasting color (aquamarine) for agent messages */
+        }
+        select {
+            width: calc(100%);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #6a0dad;
+            border-radius: 4px;
+            background-color: #3a3a3a;
+            color: #f0f0f0;
+            appearance: none; /* Remove default select styling */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23f0f0f0%22%20d%3D%22M287%2C197.387L154.21%2C64.599c-5.076-5.076-11.82-7.857-19.031-7.857c-7.211%2C0-13.956%2C2.781-19.032%2C7.857L5.387%2C197.387c-10.218%2C10.217-2.618%2C26.183%2C0%2C28.8C7.994%2C229.006%2C21.439%2C233.159%2C32.185%2C233.159h228.094c10.745%2C0%2C24.19-4.153%2C26.804-6.942C289.613%2C223.57%2C297.215%2C207.604%2C287%2C197.387z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7em top 50%;
+            background-size: 0.65em auto;
+        }
+        select:focus {
+            outline: none;
+            border-color: #8a2be2;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chatbot Platform</h1>
+
+        <!-- Authentication Page -->
+        <div class="page-section" id="authPage">
+            <!-- Register Form -->
+            <div id="registerForm">
+                <h2>Register</h2>
+                <input type="email" id="registerEmail" placeholder="Email">
+                <input type="password" id="registerPassword" placeholder="Password">
+                <button id="registerBtn">Register</button>
+                <p>Already registered? <a href="#" id="showLoginLink">Login here</a></p>
+            </div>
+
+            <!-- Login Form (initially hidden) -->
+            <div id="loginForm" class="hidden">
+                <h2>Login</h2>
+                <input type="email" id="loginEmail" placeholder="Email">
+                <input type="password" id="loginPassword" placeholder="Password">
+                <button id="loginBtn">Login</button>
+                <p>Don't have an account? <a href="#" id="showRegisterLink">Register here</a></p>
+            </div>
+        </div>
+
+        <!-- App Interface (after login) -->
+        <div class="app-interface hidden" id="appInterface">
+            <div class="nav-buttons">
+                <button id="navProjectsBtn">Projects</button>
+                <button id="navPromptsBtn">Prompts</button>
+                <button id="navChatBtn">Chat</button>
+                <button id="logoutBtn">Logout</button>
+            </div>
+
+            <!-- Projects Page -->
+            <div class="page-section" id="projectsPage">
+                <h3>Welcome, <span id="userEmail"></span>! Manage Your Projects:</h3>
+                <h4>Create Project</h4>
+                <input type="text" id="projectName" placeholder="Project Name">
+                <textarea id="projectDescription" placeholder="Project Description"></textarea>
+                <button id="createProjectBtn">Create Project</button>
+                
+                <h4>Your Projects</h4>
+                <select id="projectSelect"></select>
+            </div>
+
+            <!-- Prompts Page -->
+            <div class="page-section hidden" id="promptsPage">
+                <h3>Manage Prompts for <span id="currentProjectName"></span>:</h3>
+                <h4>Create Prompt</h4>
+                <input type="text" id="promptTitle" placeholder="Prompt Title">
+                <textarea id="promptContent" placeholder="Prompt Content"></textarea>
+                <button id="createPromptBtn">Create Prompt</button>
+            </div>
+
+            <!-- Chat Page -->
+            <div class="page-section hidden" id="chatPage">
+                <h3>Chat with your Agent:</h3>
+                <p>Select a System Prompt for this Chat:</p>
+                <select id="systemPromptSelect"></select>
+                <p>Currently Active Prompt: <span id="activePromptDisplay">None</span></p>
+                <div class="chat-window" id="chatWindow"></div>
+                <input type="text" id="chatInput" placeholder="Type your message...">
+                <button id="sendChatBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const authPage = document.getElementById('authPage');
+        const registerForm = document.getElementById('registerForm'); // New
+        const loginForm = document.getElementById('loginForm');     // New
+        const appInterface = document.getElementById('appInterface');
+        const projectsPage = document.getElementById('projectsPage');
+        const promptsPage = document.getElementById('promptsPage');
+        const chatPage = document.getElementById('chatPage');
+        
+        const userEmailSpan = document.getElementById('userEmail');
+        const currentProjectNameSpan = document.getElementById('currentProjectName');
+        const registerEmailInput = document.getElementById('registerEmail');
+        const registerPasswordInput = document.getElementById('registerPassword');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginEmailInput = document.getElementById('loginEmail');
+        const loginPasswordInput = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        // New links for toggling auth forms
+        const showLoginLink = document.getElementById('showLoginLink');
+        const showRegisterLink = document.getElementById('showRegisterLink');
+
+        const projectNameInput = document.getElementById('projectName');
+        const projectDescriptionInput = document.getElementById('projectDescription');
+        const createProjectBtn = document.getElementById('createProjectBtn');
+        const projectSelect = document.getElementById('projectSelect');
+        const promptTitleInput = document.getElementById('promptTitle');
+        const promptContentInput = document.getElementById('promptContent');
+        const createPromptBtn = document.getElementById('createPromptBtn');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        
+        const navProjectsBtn = document.getElementById('navProjectsBtn');
+        const navPromptsBtn = document.getElementById('navPromptsBtn');
+        const navChatBtn = document.getElementById('navChatBtn');
+
+        // New elements for prompt selection
+        const systemPromptSelect = document.getElementById('systemPromptSelect');
+        const activePromptDisplay = document.getElementById('activePromptDisplay');
+
+        let token = localStorage.getItem('token');
+        let currentUserEmail = localStorage.getItem('userEmail');
+        let conversationHistory = []; // New: To store chat messages
+        let currentProjectId = null;
+        let currentProjectName = null;
+        let activeSystemPromptContent = null; // New: To store the selected system prompt content
+
+        const showPage = (pageToShow) => {
+            console.log("Showing page:", pageToShow.id); // Re-added console.log
+            [projectsPage, promptsPage, chatPage].forEach(page => {
+                if (page.id === pageToShow.id) {
+                    page.classList.remove('hidden');
+                } else {
+                    page.classList.add('hidden');
+                }
+            });
+        };
+
+        const showAppInterface = () => {
+            console.log("Showing app interface."); // Re-added console.log
+            authPage.classList.add('hidden');
+            appInterface.classList.remove('hidden');
+            userEmailSpan.textContent = currentUserEmail;
+            fetchProjects();
+            showPage(projectsPage); // Default to projects page after login
+        };
+
+        const showAuthForms = () => {
+            authPage.classList.remove('hidden');
+            appInterface.classList.add('hidden');
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail');
+            token = null;
+            currentUserEmail = null;
+            conversationHistory = []; // Clear history on logout
+
+            // Always show register form first on logout
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        };
+
+        const fetchProjects = async () => {
+            if (!token) return;
+            try {
+                const response = await fetch('/projects', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const projects = await response.json();
+                    projectSelect.innerHTML = '';
+                    projects.forEach(project => {
+                        const option = document.createElement('option');
+                        option.value = project.id;
+                        option.textContent = project.name;
+                        projectSelect.appendChild(option);
+                    });
+                    // Set initial project if available
+                    if (projects.length > 0) {
+                        currentProjectId = projects[0].id;
+                        currentProjectName = projects[0].name;
+                        currentProjectNameSpan.textContent = currentProjectName;
+                        fetchPrompts(currentProjectId); // Fetch prompts for the initial project
+                    }
+                } else {
+                    console.error('Failed to fetch projects');
+                }
+            } catch (error) {
+                console.error('Error fetching projects:', error);
+            }
+        };
+
+        // New function for toggling auth forms
+        const toggleAuthForms = (showRegister) => {
+            if (showRegister) {
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            }
+        };
+
+        // New function to fetch prompts for a selected project
+        const fetchPrompts = async (projectId) => {
+            if (!token || !projectId) return;
+            try {
+                const response = await fetch(`/projects/${projectId}/prompts`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const prompts = await response.json();
+                    systemPromptSelect.innerHTML = '<option value="">-- Select a System Prompt --</option>';
+                    prompts.forEach(prompt => {
+                        const option = document.createElement('option');
+                        option.value = prompt.content;
+                        option.textContent = prompt.title;
+                        option.dataset.promptId = prompt.id; // Store ID if needed later
+                        systemPromptSelect.appendChild(option);
+                    });
+                    activePromptDisplay.textContent = activeSystemPromptContent || 'None'; // Update display
+                } else {
+                    console.error('Failed to fetch prompts');
+                }
+            } catch (error) {
+                console.error('Error fetching prompts:', error);
+            }
+        };
+
+        const addMessageToChat = (message, sender) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.textContent = message;
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            // New: Store message in history
+            conversationHistory.push({ role: sender === 'user' ? 'user' : 'assistant', content: message });
+        };
+
+        registerBtn.addEventListener('click', async () => {
+            const email = registerEmailInput.value;
+            const password = registerPasswordInput.value;
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                if (response.ok) {
+                    alert('Registration successful! You can now login.');
+                    registerEmailInput.value = '';
+                    registerPasswordInput.value = '';
+                    toggleAuthForms(false); // Show login form after successful registration
+                } else {
+                    alert('Registration failed.');
+                }
+            } catch (error) {
+                console.error('Error during registration:', error);
+                alert('An error occurred during registration.');
+            }
+        });
+
+        loginBtn.addEventListener('click', async () => {
+            const email = loginEmailInput.value;
+            const password = loginPasswordInput.value;
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    token = data.token;
+                    currentUserEmail = email;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('userEmail', email);
+                    alert('Login successful!');
+                    showAppInterface();
+                } else {
+                    alert('Login failed.');
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                alert('An error occurred during login.');
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            showAuthForms();
+        });
+
+        createProjectBtn.addEventListener('click', async () => {
+            const name = projectNameInput.value;
+            const description = projectDescriptionInput.value;
+            if (!name || !token) return;
+
+            try {
+                const response = await fetch('/projects', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, description })
+                });
+                if (response.ok) {
+                    alert('Project created successfully!');
+                    projectNameInput.value = '';
+                    projectDescriptionInput.value = '';
+                    fetchProjects();
+                } else {
+                    alert('Failed to create project.');
+                }
+            } catch (error) {
+                console.error('Error creating project:', error);
+                alert('An error occurred creating the project.');
+            }
+        });
+
+        createPromptBtn.addEventListener('click', async () => {
+            if (!currentProjectId || !token) {
+                alert('Please select or create a project first.');
+                return;
+            }
+            const title = promptTitleInput.value;
+            const content = promptContentInput.value;
+            if (!title || !content) return;
+
+            try {
+                const response = await fetch(`/projects/${currentProjectId}/prompts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title, content })
+                });
+                if (response.ok) {
+                    alert('Prompt created successfully!');
+                    promptTitleInput.value = '';
+                    promptContentInput.value = '';
+                    fetchPrompts(currentProjectId); // Re-fetch prompts after creation
+                } else {
+                    alert('Failed to create prompt.');
+                }
+            } catch (error) {
+                console.error('Error creating prompt:', error);
+                alert('An error occurred creating the prompt.');
+            }
+        });
+
+        sendChatBtn.addEventListener('click', async () => {
+            const prompt = chatInput.value;
+            if (!prompt || !token) return;
+
+            addMessageToChat(prompt, 'user');
+            chatInput.value = '';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    // Send the entire conversation history along with the active system prompt
+                    body: JSON.stringify({ messages: conversationHistory, systemPrompt: activeSystemPromptContent })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Received agent response data:", data); // Re-added console.log
+                    addMessageToChat(data.response, 'agent');
+                } else {
+                    console.error("API response not OK:", response);
+                    addMessageToChat('Error: Could not get response from agent.', 'agent');
+                }
+            } catch (error) {
+                console.error('Error during chat API call:', error);
+                addMessageToChat('Error: An unexpected error occurred.', 'agent');
+            }
+        });
+
+        projectSelect.addEventListener('change', (event) => {
+            currentProjectId = event.target.value;
+            currentProjectName = event.target.options[event.target.selectedIndex].text;
+            currentProjectNameSpan.textContent = currentProjectName;
+            conversationHistory = []; // Clear chat history when project changes
+            chatWindow.innerHTML = ''; // Clear chat window
+            activeSystemPromptContent = null; // Clear active system prompt
+            activePromptDisplay.textContent = 'None';
+            systemPromptSelect.innerHTML = '<option value="">-- Select a System Prompt --</option>'; // Clear prompt dropdown
+            fetchPrompts(currentProjectId); // Fetch new prompts for the selected project
+        });
+
+        // New event listener for system prompt selection
+        systemPromptSelect.addEventListener('change', (event) => {
+            activeSystemPromptContent = event.target.value;
+            activePromptDisplay.textContent = event.target.options[event.target.selectedIndex].textContent || 'None';
+            conversationHistory = []; // Clear chat history when prompt changes to apply new system message
+            chatWindow.innerHTML = ''; // Clear chat window
+        });
+
+        navProjectsBtn.addEventListener('click', () => showPage(projectsPage));
+        navPromptsBtn.addEventListener('click', () => {
+            if (!currentProjectId) {
+                alert('Please select or create a project first.');
+                return;
+            }
+            showPage(promptsPage);
+        });
+        navChatBtn.addEventListener('click', () => {
+            if (!currentProjectId) {
+                alert('Please select or create a project first.');
+                return;
+            }
+            showPage(chatPage);
+        });
+
+        // Event listeners for toggling auth forms
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleAuthForms(false);
+        });
+
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleAuthForms(true);
+        });
+
+        // Initial check if user is already logged in
+        if (token && currentUserEmail) {
+            showAppInterface();
+        } else {
+            showAuthForms();
+        }
+    </script>
+</body>
+</html>
